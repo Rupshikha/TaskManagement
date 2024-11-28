@@ -1,0 +1,38 @@
+#root_container {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+#gantt {
+  /* height: calc(100% - 100px); */
+  height: 100%;
+}
+
+.gantt_container {
+  background-color: #f9f9ff;
+}
+
+.gantt_resizer_x .gantt_resizer_x {
+  width: 10px;
+  background-color: #bcbcff;
+  cursor: col-resize;
+  position: unset;
+}
+
+.gantt_resizer_x .gantt_resizer_x::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-72%, -50%);
+  width: 24px;
+  height: 24px;
+  background: url("./resizer.svg") no-repeat center center;
+  background-size: contain;
+  z-index: 100;
+}
+
+.gantt_task_scale .gantt_scale_line:first-child {
+  background-color: #ededff;
+}
