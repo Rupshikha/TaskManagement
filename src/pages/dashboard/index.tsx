@@ -181,6 +181,7 @@ export default function Dashboard() {
       gantt.detachEvent(onGridClick);
       gantt.detachEvent(onTaskClick);
       gantt.detachEvent(onTaskDelete);
+      gantt.detachEvent(onAfterTaskMove);
     };
   }, [user]);
 
