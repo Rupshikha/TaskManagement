@@ -167,7 +167,7 @@ export default function Dashboard() {
 
     const onAfterTaskMove = gantt.attachEvent(
       "onAfterTaskMove",
-      async (id, mode, event) => {
+      async (id, mode) => {
         console.log("TASK MOVE", id, mode, typeof mode);
         if (typeof mode !== "number") return;
         const serializedJson = gantt.serialize("json");
