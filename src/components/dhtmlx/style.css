@@ -30,9 +30,12 @@
   height: 24px;
   background: url("./resizer.svg") no-repeat center center;
   background-size: contain;
-  z-index: 100;
 }
 
 .gantt_task_scale .gantt_scale_line:first-child {
   background-color: #ededff;
+}
+
+.gantt_task_scale .gantt_scale_line:first-child .gantt_scale_cell {
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
 }

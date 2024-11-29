@@ -1,11 +1,7 @@
-import { ITaskDataList } from "../dhtmlx/Gantt";
-
 export interface ICustomModal {
   open: boolean;
   handleClose: () => void;
-  setTaskDataList: React.Dispatch<React.SetStateAction<ITaskDataList>>;
   filteredTask: INewTaskData | null;
-  updateTask: (id: string, task: any) => void;
 }
 
 export interface INewTaskData {
@@ -16,4 +12,5 @@ export interface INewTaskData {
   duration: number;
   progress: number;
   color: string;
+  isParent?: boolean;
 }

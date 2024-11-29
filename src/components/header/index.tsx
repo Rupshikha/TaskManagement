@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 const Container = styled("div")({
   display: "flex",
   justifyContent: "space-between",
+  alignItems: "center",
   margin: "15px 0",
 });
 
@@ -21,7 +22,7 @@ export default function Header() {
   let navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -45,9 +46,12 @@ export default function Header() {
       <ProfileContainer>
         <Avatar
           alt={user?.displayName ?? "user"}
-          src="https://lh3.googleusercontent.com/a/ACg8ocLPxpL-J5xmlZ3s1Eiyg5gG5Z00v7E9i30WHlhlHfrO6KQ99A=s96-c"
-          sx={{ marginRight: "10px" }}
-        />
+          sx={{
+            marginRight: "10px",
+          }}
+        >
+          {user?.displayName?.[0] ?? "A"}
+        </Avatar>
         <Box>
           <Typography
             sx={{ color: "#000000", fontWeight: "600", fontSize: "16px" }}

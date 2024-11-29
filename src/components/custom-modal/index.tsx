@@ -1,15 +1,17 @@
+import { useRef, useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Modal from "@mui/material/Modal";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import * as React from "react";
 import { ICustomModal, INewTaskData } from "./type";
 import { v4 as uuidv4 } from "uuid";
 import { differenceInDays, format } from "date-fns";
+import { GanttStatic } from "../dhtmlx/codebase/dhtmlxgantt";
+import { Delete as DeleteIcon } from "@mui/icons-material";
 
 const NEW_TASK_DATA = {
   id: "",
@@ -35,6 +37,9 @@ const style = {
 const HeaderContainer = styled(Box)({
   backgroundColor: "#5C55E5",
   color: "#F9F9FF",
+  display: "flex",
+  justifyContent: "space-between",
+  padding: "30px",
 });
 
 const BottonContainer = styled(Box)({
@@ -44,19 +49,15 @@ const BottonContainer = styled(Box)({
   padding: "30px",
 });
 
+declare var gantt: GanttStatic;
+
 export default function CustomModal({
   open,
   handleClose,
-  setTaskDataList,
   filteredTask,
-  updateTask,
 }: ICustomModal) {
-  console.log("filteredtask", filteredTask);
-  const textFieldRef = React.useRef<HTMLInputElement>(null);
-  const [newTaskData, setNewTaskData] = React.useState<INewTaskData>(
-    filteredTask ?? NEW_TASK_DATA
-  );
-  console.log("newTaskData", newTaskData);
+  const textFieldRef = useRef<HTMLInputElement>(null);
+  const [newTaskData, setNewTaskData] = useState<INewTaskData>(NEW_TASK_DATA);
 
   const duration = differenceInDays(
     newTaskData?.end_date,
@@ -73,24 +74,23 @@ export default function CustomModal({
   };
 
   const handleTaskCreate = () => {
-    setTaskDataList((prev) => ({
-      data: [
-        ...prev.data,
-        {
-          ...newTaskData,
-          id: uuidv4(),
-          start_date: format(newTaskData.start_date, "yyyy-MM-dd"),
-          end_date: format(newTaskData.end_date, "yyyy-MM-dd"),
-        },
-      ],
-    }));
-    setNewTaskData(NEW_TASK_DATA);
+    gantt.addTask(
+      {
+        ...newTaskData,
+        id: uuidv4(),
+        start_date: format(newTaskData.start_date, "yyyy-MM-dd"),
+        end_date: format(newTaskData.end_date, "yyyy-MM-dd"),
+      },
+      filteredTask && filteredTask.isParent ? filteredTask.id : undefined
+    );
+
     handleClose();
+    setNewTaskData(NEW_TASK_DATA);
   };
 
   const handleUpdatedFn = () => {
     if (!filteredTask) return;
-    updateTask(filteredTask?.id, {
+    gantt.updateTask(filteredTask.id, {
       id: newTaskData?.id,
       text: newTaskData?.text,
       start_date: newTaskData.start_date,
@@ -99,10 +99,7 @@ export default function CustomModal({
       progress: newTaskData.progress,
       color: newTaskData.color,
     });
-  };
-
-  const onCloseHandler = () => {
-    setNewTaskData(filteredTask ?? NEW_TASK_DATA);
+    setNewTaskData(NEW_TASK_DATA);
     handleClose();
   };
 
@@ -111,8 +108,21 @@ export default function CustomModal({
     textFieldRef?.current.click();
   };
 
-  React.useEffect(() => {
+  const handleDeleteTask = () => {
+    if (!filteredTask) return;
+    gantt.deleteTask(filteredTask.id);
+    setNewTaskData(NEW_TASK_DATA);
+    handleClose();
+  };
+
+  const onCloseHandler = () => {
+    setNewTaskData(NEW_TASK_DATA);
+    handleClose();
+  };
+
+  useEffect(() => {
     if (filteredTask) setNewTaskData(filteredTask);
+    else setNewTaskData(NEW_TASK_DATA);
   }, [filteredTask]);
 
   return (
@@ -125,12 +135,18 @@ export default function CustomModal({
       >
         <Box sx={style}>
           <HeaderContainer>
-            <Typography
-              variant="h4"
-              sx={{ color: "#F9F9FF", weight: "700", padding: "30px" }}
-            >
-              New Task
+            <Typography variant="h4" sx={{ color: "#F9F9FF", weight: "700" }}>
+              {filteredTask ? "Update Task" : "New Task"}
             </Typography>
+
+            {filteredTask && (
+              <IconButton onClick={handleDeleteTask}>
+                <DeleteIcon
+                  sx={{ color: "white", padding: 0 }}
+                  fontSize="medium"
+                />
+              </IconButton>
+            )}
           </HeaderContainer>
 
           <Grid container spacing={2} sx={{ padding: "30px" }}>
@@ -241,7 +257,12 @@ export default function CustomModal({
                   variant="outlined"
                   type="text"
                   name="duration"
-                  //  onChange={(e) => handleTaskDataChange(e)}
+                  error={duration < 0 ? true : false}
+                  helperText={
+                    duration < 0
+                      ? "Start Date should be less then the End Date"
+                      : ""
+                  }
                   slotProps={{
                     htmlInput: {
                       min: 0,
@@ -282,10 +303,12 @@ export default function CustomModal({
                 padding: "10px 50px",
               }}
               onClick={() =>
-                filteredTask ? handleUpdatedFn() : handleTaskCreate()
+                filteredTask && !filteredTask.isParent
+                  ? handleUpdatedFn()
+                  : handleTaskCreate()
               }
             >
-              {filteredTask ? "Update" : "Create"}
+              {filteredTask && !filteredTask.isParent ? "Update" : "Create"}
             </Button>
             <Button
               sx={{

@@ -1,5 +1,6 @@
 import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
+import { useState } from "react";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 38,
@@ -49,8 +50,22 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-export default function CustomSwitch() {
+interface ICustomSwitchProps {
+  onChange?: (value: boolean) => void;
+}
+
+export default function CustomSwitch({ onChange }: ICustomSwitchProps) {
+  const [value, setValue] = useState(false);
   return (
-    <AntSwitch defaultChecked inputProps={{ "aria-label": "ant design" }} />
+    <AntSwitch
+      value={value}
+      inputProps={{ "aria-label": "auto schedule toggle" }}
+      onChange={() => {
+        setValue((prev) => {
+          onChange?.(!prev);
+          return !prev;
+        });
+      }}
+    />
   );
 }

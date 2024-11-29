@@ -30,7 +30,6 @@ export default function AuthContextProvider({
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
-    // signInWithRedirect(auth, provider);
   };
 
   const logOut = async () => {
@@ -40,7 +39,6 @@ export default function AuthContextProvider({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      console.log("User", currentUser);
     });
     return () => {
       unsubscribe();
