@@ -10,7 +10,7 @@ const Container = styled("div")({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  margin: "15px 0",
+  padding: "15px 0",
 });
 
 const ProfileContainer = styled("div")({
