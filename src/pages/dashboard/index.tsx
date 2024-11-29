@@ -83,6 +83,7 @@ export default function Dashboard() {
         const tasks = data.tasks || [];
         setLoading(false);
         // wait for state change
+        console.log({ tasks });
         setTimeout(() => {
           gantt.parse(tasks);
         }, 100);
