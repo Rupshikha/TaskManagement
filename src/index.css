@@ -1,4 +1,6 @@
 body {
+  height: 100dvh;
+  width: 100dvw;
   padding: 0px;
   margin: 0px;
 }
