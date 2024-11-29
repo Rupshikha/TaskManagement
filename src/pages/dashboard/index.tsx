@@ -84,6 +84,7 @@ export default function Dashboard() {
         const tasks = data.tasks || [];
         setLoading(false);
         // wait for state change
+        console.log({ tasks });
         setTimeout(() => {
           gantt.parse(tasks);
         }, 100);
@@ -166,7 +167,7 @@ export default function Dashboard() {
 
     const onAfterTaskMove = gantt.attachEvent(
       "onAfterTaskMove",
-      async (id, mode, event) => {
+      async (id, mode) => {
         console.log("TASK MOVE", id, mode, typeof mode);
         if (typeof mode !== "number") return;
         const serializedJson = gantt.serialize("json");
@@ -180,6 +181,7 @@ export default function Dashboard() {
       gantt.detachEvent(onGridClick);
       gantt.detachEvent(onTaskClick);
       gantt.detachEvent(onTaskDelete);
+      gantt.detachEvent(onAfterTaskMove);
     };
   }, [user]);
 

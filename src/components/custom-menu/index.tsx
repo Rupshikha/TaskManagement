@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { GanttStatic } from "../dhtmlx/codebase/dhtmlxgantt";
 import { useRef, useState } from "react";
+import { INewTaskData } from "../custom-modal/type";
 
 const StyledButton = styled(Button)({
   boxShadow: "none",
@@ -35,15 +36,14 @@ export default function CustomMenu() {
     handleClose();
   };
 
-  const handleImportJson = () => {
-    if (!inputFile.current) return;
-    handleClose();
-    inputFile.current.click();
-  };
+  // const handleImportJson = () => {
+  //   if (!inputFile.current) return;
+  //   inputFile.current.click();
+  //   handleClose();
+  // };
 
   const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log({ file });
     if (file) {
       // Validate file type
       if (file.type !== "application/json") {
@@ -52,10 +52,37 @@ export default function CustomMenu() {
       const reader = new FileReader();
       reader.onload = () => {
         try {
-          console.log("reader >>", reader.result);
           const json = JSON.parse(reader.result as string);
-          console.log({ json });
-          gantt.parse(json);
+
+          let toParseData = (json.data.data as INewTaskData[]).map((task) => {
+            return {
+              color: task.color ?? "",
+              duration: task.duration ?? 0,
+              end_date: task.end_date ?? new Date(),
+              id: task.id ? task.id + "" : "",
+              progress: task.progress ? task.progress : 0,
+              start_date: task.start_date ?? new Date(),
+              text: task.text ?? "",
+            };
+          });
+
+          toParseData = toParseData.map((task) => {
+            return {
+              color: task.color ?? "",
+              duration: task.duration ?? 0,
+              end_date: task.end_date ?? new Date(),
+              id: task.id ? task.id + "" : "",
+              progress: task.progress ? task.progress : 0,
+              start_date: task.start_date ?? new Date(),
+              text: task.text ?? "",
+            };
+          });
+
+          gantt.parse({
+            data: toParseData,
+          });
+          gantt.render();
+          console.log({ toParseData });
         } catch (err) {
           console.log("json load error: ", err);
         }
@@ -106,16 +133,16 @@ export default function CustomMenu() {
         }}
       >
         <MenuItem
-          onClick={handleImportJson}
+          onClick={handleClose}
           sx={{ color: "#5C55E5", fontSize: "15px" }}
         >
-          Import from JSON
+          Import from Csv
         </MenuItem>
         <MenuItem
           onClick={handleExportToJson}
           sx={{ color: "#5C55E5", fontSize: "15px" }}
         >
-          Export to JSON
+          Export to Csv
         </MenuItem>
       </Menu>
     </div>
