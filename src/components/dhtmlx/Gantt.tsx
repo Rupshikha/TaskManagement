@@ -10,59 +10,6 @@ import "./style.css";
 import CustomModal from "../custom-modal";
 import { INewTaskData } from "../custom-modal/type";
 
-// const data = {
-//   data: [
-//     {
-//       id: 1,
-//       text: "Task #1",
-//       start_date: "2024-08-20 10:30",
-//       duration: 8,
-//       progress: 0.6,
-//       priority: "high",
-//     },
-//     {
-//       id: 2,
-//       text: "Task #2",
-//       start_date: "2019-08-21 10:30",
-//       duration: 3,
-//       progress: 0.4,
-//       priority: "normal",
-//     },
-//     {
-//       id: 3,
-//       text: "Task #3",
-//       start_date: "2024-08-23 10:30",
-//       duration: 3,
-//       progress: 0.4,
-//       priority: "low",
-//     },
-//     {
-//       id: 4,
-//       text: "Task #4",
-//       start_date: "2024-08-24 10:30",
-//       duration: 3,
-//       progress: 0.4,
-//       priority: "low",
-//     },
-//     {
-//       id: 5,
-//       text: "Task #5",
-//       start_date: "2024-08-24 10:30",
-//       duration: 3,
-//       progress: 0.4,
-//       priority: "low",
-//     },
-//     {
-//       id: 6,
-//       text: "Task #6",
-//       start_date: "2024-08-25 10:30",
-//       duration: 3,
-//       progress: 0.4,
-//       priority: "low",
-//     },
-//   ],
-// };
-
 const TaskDataList = {
   data: [],
 };
@@ -83,6 +30,7 @@ const ButtonContainer = styled("div")({
   display: "flex",
   gap: "15px",
   alignItems: "center",
+  marginBottom: "20px",
 });
 
 const SwitchContainer = styled("div")({
@@ -160,13 +108,20 @@ const GanttChart = () => {
 
     gantt.config.start_date = new Date(new Date().getFullYear(), 1, 1);
     gantt.config.end_date = gantt.date.add(gantt.config.start_date, 1, "year");
-    // gantt.attachEvent("onTaskClick", function (id, e) {
-    //   //any custom logic here
-    //   filterEditedTask(id);
+    gantt.attachEvent("onTaskDblClick", function (id, e) {
+      //any custom logic here
+      filterEditedTask(id);
 
-    //   handleOpen();
-    //   return false;
-    // });
+      handleOpen();
+      return false;
+    });
+
+    gantt.attachEvent("onGridHeaderClick", function () {
+      //any custom logic here
+
+      handleOpen();
+      return false;
+    });
 
     if (gantContainerRef.current) {
       gantt.init(gantContainerRef.current);

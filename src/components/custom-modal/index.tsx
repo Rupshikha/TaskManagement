@@ -9,7 +9,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import * as React from "react";
 import { ICustomModal, INewTaskData } from "./type";
 import { v4 as uuidv4 } from "uuid";
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 
 const NEW_TASK_DATA = {
   id: "",
@@ -58,6 +58,11 @@ export default function CustomModal({
   );
   console.log("newTaskData", newTaskData);
 
+  const duration = differenceInDays(
+    newTaskData?.end_date,
+    newTaskData?.start_date
+  );
+
   const handleTaskDataChange = (e: {
     target: { name: string; value: Date | string | null };
   }) => {
@@ -94,8 +99,11 @@ export default function CustomModal({
       progress: newTaskData.progress,
       color: newTaskData.color,
     });
+  };
 
-    
+  const onCloseHandler = () => {
+    setNewTaskData(filteredTask ?? NEW_TASK_DATA);
+    handleClose();
   };
 
   const onClickArrowIcon = () => {
@@ -111,7 +119,7 @@ export default function CustomModal({
     <div>
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={onCloseHandler}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -193,6 +201,7 @@ export default function CustomModal({
                     position: "relative",
                     marginTop: "1.5px",
                   }}
+                  onClick={onClickArrowIcon}
                 >
                   <Box
                     sx={{
@@ -205,7 +214,7 @@ export default function CustomModal({
                   <Typography sx={{ flexGrow: 1 }}>
                     {newTaskData?.color}
                   </Typography>
-                  <KeyboardArrowDownIcon onClick={onClickArrowIcon} />
+                  <KeyboardArrowDownIcon />
                   <input
                     id="outlined-basic"
                     value={newTaskData.color}
@@ -230,15 +239,15 @@ export default function CustomModal({
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
-                  type="number"
+                  type="text"
                   name="duration"
-                  onChange={(e) => handleTaskDataChange(e)}
+                  //  onChange={(e) => handleTaskDataChange(e)}
                   slotProps={{
                     htmlInput: {
                       min: 0,
                     },
                   }}
-                  value={newTaskData.duration}
+                  value={duration}
                 />
               </Box>
             </Grid>
@@ -286,7 +295,7 @@ export default function CustomModal({
                 textTransform: "none",
                 padding: "10px 50px",
               }}
-              onClick={handleClose}
+              onClick={onCloseHandler}
             >
               Cancel
             </Button>

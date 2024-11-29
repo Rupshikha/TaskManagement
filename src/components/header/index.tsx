@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 const Container = styled("div")({
   display: "flex",
   justifyContent: "space-between",
+  margin: "15px 0",
 });
 
 const ProfileContainer = styled("div")({

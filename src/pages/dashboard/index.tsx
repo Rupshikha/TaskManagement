@@ -3,7 +3,7 @@ import Header from "../../components/header";
 import GanttChart from "../../components/dhtmlx/Gantt";
 
 export const MainContainer = styled("div")({
-  padding: "0 20px",
+  margin: "0 30px",
 });
 
 export default function Dashboard() {
