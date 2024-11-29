@@ -9,7 +9,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { ICustomModal, INewTaskData } from "./type";
 import { v4 as uuidv4 } from "uuid";
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { GanttStatic } from "../dhtmlx/codebase/dhtmlxgantt";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 
@@ -58,6 +58,11 @@ export default function CustomModal({
 }: ICustomModal) {
   const textFieldRef = useRef<HTMLInputElement>(null);
   const [newTaskData, setNewTaskData] = useState<INewTaskData>(NEW_TASK_DATA);
+
+  const duration = differenceInDays(
+    newTaskData?.end_date,
+    newTaskData?.start_date
+  );
 
   const handleTaskDataChange = (e: {
     target: { name: string; value: Date | string | null };
@@ -110,6 +115,11 @@ export default function CustomModal({
     handleClose();
   };
 
+  const onCloseHandler = () => {
+    setNewTaskData(NEW_TASK_DATA);
+    handleClose();
+  };
+
   useEffect(() => {
     if (filteredTask) setNewTaskData(filteredTask);
     else setNewTaskData(NEW_TASK_DATA);
@@ -119,7 +129,7 @@ export default function CustomModal({
     <div>
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={onCloseHandler}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -207,6 +217,7 @@ export default function CustomModal({
                     position: "relative",
                     marginTop: "1.5px",
                   }}
+                  onClick={onClickArrowIcon}
                 >
                   <Box
                     sx={{
@@ -219,7 +230,7 @@ export default function CustomModal({
                   <Typography sx={{ flexGrow: 1 }}>
                     {newTaskData?.color}
                   </Typography>
-                  <KeyboardArrowDownIcon onClick={onClickArrowIcon} />
+                  <KeyboardArrowDownIcon />
                   <input
                     id="outlined-basic"
                     value={newTaskData.color}
@@ -244,15 +255,20 @@ export default function CustomModal({
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
-                  type="number"
+                  type="text"
                   name="duration"
-                  onChange={(e) => handleTaskDataChange(e)}
+                  error={duration < 0 ? true : false}
+                  helperText={
+                    duration < 0
+                      ? "Start Date should be less then the End Date"
+                      : ""
+                  }
                   slotProps={{
                     htmlInput: {
                       min: 0,
                     },
                   }}
-                  value={newTaskData.duration}
+                  value={duration}
                 />
               </Box>
             </Grid>
@@ -302,7 +318,7 @@ export default function CustomModal({
                 textTransform: "none",
                 padding: "10px 50px",
               }}
-              onClick={handleClose}
+              onClick={onCloseHandler}
             >
               Cancel
             </Button>

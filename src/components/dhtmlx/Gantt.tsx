@@ -66,8 +66,8 @@ const GanttChart = () => {
       <div
         id="root_contaier"
         style={{
-          width: "100%",
-          height: "calc(100% - 102px)",
+          width: "calc(100% - 60px)",
+          height: "calc(100% - 200px)",
           position: "absolute",
         }}
       >

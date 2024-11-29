@@ -19,13 +19,14 @@ import { UserAuth } from "../../context/auth";
 import { db } from "../../firebase";
 
 export const MainContainer = styled("div")({
-  padding: "0 20px",
+  padding: "0 30px",
 });
 
 const ButtonContainer = styled("div")({
   display: "flex",
   gap: "15px",
   alignItems: "center",
+  marginBottom: "18px",
 });
 
 const SwitchContainer = styled("div")({
