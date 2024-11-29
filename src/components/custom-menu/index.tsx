@@ -36,11 +36,11 @@ export default function CustomMenu() {
     handleClose();
   };
 
-  const handleImportJson = () => {
-    if (!inputFile.current) return;
-    inputFile.current.click();
-    handleClose();
-  };
+  // const handleImportJson = () => {
+  //   if (!inputFile.current) return;
+  //   inputFile.current.click();
+  //   handleClose();
+  // };
 
   const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
